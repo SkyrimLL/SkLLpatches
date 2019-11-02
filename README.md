@@ -1,5 +1,7 @@
 # SkLLPatches
-Patches to various Skyrim mods to support my own mods
+Patches to various Skyrim mods to support my own mods.
+
+The main download page is at https://www.loverslab.com/topic/42012-obscure-patches-2018-02-16/
 
 Disclaimers:
 - These are just minor adjustments to existing mods. Always refer to the original mod for new versions.
