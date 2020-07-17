@@ -214,6 +214,17 @@ Event OnUpdate()
 			_heal.RemoteCast(kPlayer, kPlayer, kPlayer)
 		endIf
 	endif
+
+	; Parasites integration 
+    If ( (StorageUtil.GetIntValue(kPlayer, "_SLP_toggleLivingArmor")==1) || (StorageUtil.GetIntValue(kPlayer, "_SLP_toggleTentacleMonster")==1) )
+		FrostUtil.ModPlayerExposure( exposureAdjust * 2, 10 )
+		playersHealth = kPlayer.GetActorValuePercentage("health")
+		if ((playersHealth < 0.8) && (FrostUtil.GetPlayerWetnessLevel()>=1))
+		  	; Debug.Trace("The player has over half their health left")
+			_heal.RemoteCast(kPlayer, kPlayer, kPlayer)
+		endIf
+	endif
+
 			
     ; Hormones Succubus/Bimbo integration
     If (StorageUtil.GetIntValue(kPlayer, "_SLH_iSuccubus")==1) 
