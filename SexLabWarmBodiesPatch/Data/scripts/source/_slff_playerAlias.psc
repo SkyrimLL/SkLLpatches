@@ -96,8 +96,9 @@ endEvent
 
 ;how much gold hypnosis victim earns each day
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
-	kPlayer        = Game.GetPlayer() as Actor
+	float _SLH_fHormonePigmentationToken = StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken") 
 	kPlayerRef = Game.GetPlayer() 
+	kPlayer        = kPlayerRef as Actor
 	; Debug.Notification("[SLFF] Changing location - Exposure: " + FrostUtil.GetPlayerExposure())
 
 	updateExposure()
@@ -106,16 +107,25 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	if (FrostUtil.GetPlayerExposure() >= (frostfallColdLimit / 4))
 		FrostUtil.ModPlayerExposure( -0.2 * _baseRate.GetValue() )
 	endIf
+
+	if kPlayerRef.IsInInterior()
+		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken", _SLH_fHormonePigmentationToken - 0.1)
+	else
+		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken", _SLH_fHormonePigmentationToken + 0.1)
+	endif
 endEvent
 
 Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
 
 	If (akAggressor != None) && bFrostFallInit && (FrostUtil.GetPlayerExposure() >= frostfallColdLimit)
+		float _SLH_fHormoneMetabolismToken = StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken") 
 		; exposureDelta = exposureMax - FrostUtil.GetPlayerExposure()
 
 		; exposurePoints.Mod( minFloat( 1.0, exposureDelta) )
 		Debug.Trace("[SLFF] Heat from combat " + FrostUtil.GetPlayerExposure())
 		FrostUtil.ModPlayerExposure( _baseRate.GetValue() )
+		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 0.1)
+
 	EndIf
 EndEvent
 
@@ -256,6 +266,10 @@ EndEvent
 
 
 function updateExposure()
+	; Hormones compatibility - High metabolism = Better cold resistance
+	float _SLH_fHormoneMetabolismToken = StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken") 
+	float fMetabolismRate = 0.1 + (StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolism") / 100.0)
+
 	If (FrostUtil.GetAPIVersion() > 0) && !bFrostFallInit
 		; exposurePoints.SetValue( FrostUtil.GetPlayerExposure() )
 		Debug.Notification("[SLFF] Frostfall 3.0 update detected" )
@@ -285,18 +299,21 @@ function updateExposure()
 			Debug.Trace("[SLFF] Heat from sprinting "+ FrostUtil.GetPlayerExposure()) 
 
 			; exposurePoints.Mod( minFloat(exposureAdjust, exposureDelta) )
-			FrostUtil.ModPlayerExposure( (-1.0 * _baseRate.GetValue()) * 0.2 )
+			FrostUtil.ModPlayerExposure( (-1.0 * _baseRate.GetValue()) * (fMetabolismRate * 2.0) )
+			StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 2.0)
 
 		elseif (kPlayer.IsRunning() )
 			Debug.Trace("[SLFF] Heat from running "+ FrostUtil.GetPlayerExposure()) 
 
 			; exposurePoints.Mod( minFloat(exposureAdjust / 2.0, exposureDelta) )
-			FrostUtil.ModPlayerExposure(  (-1.0 * _baseRate.GetValue()) * 0.1  )
+			FrostUtil.ModPlayerExposure(  (-1.0 * _baseRate.GetValue()) * fMetabolismRate  )
+			StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 1.0)
 
 		else 
 			; Debug.Trace("[SLFF] Heat from idle") 
 
 			; exposurePoints.Mod( minFloat(1.0, exposureDelta) )
+			FrostUtil.ModPlayerExposure(  (-1.0 * _baseRate.GetValue()) * (fMetabolismRate / 2.0) )
 			; FrostUtil.ModPlayerExposure( -1.0  )
 
 		endif
