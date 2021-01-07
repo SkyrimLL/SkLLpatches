@@ -113,19 +113,25 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	else
 		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken", _SLH_fHormonePigmentationToken + 0.1)
 	endif
+
+	Debug.Trace("[SLFF] Changing location - _SLH_fHormonePigmentationToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken")) 
 endEvent
 
 Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
 
 	If (akAggressor != None) && bFrostFallInit && (FrostUtil.GetPlayerExposure() >= frostfallColdLimit)
-		float _SLH_fHormoneMetabolismToken = StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken") 
 		; exposureDelta = exposureMax - FrostUtil.GetPlayerExposure()
 
 		; exposurePoints.Mod( minFloat( 1.0, exposureDelta) )
 		Debug.Trace("[SLFF] Heat from combat " + FrostUtil.GetPlayerExposure())
 		FrostUtil.ModPlayerExposure( _baseRate.GetValue() )
-		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 0.1)
 
+	EndIf
+
+	If (akAggressor != None) 
+		float _SLH_fHormoneMetabolismToken = StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken") 
+		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 0.1)
+		Debug.Trace("[SLFF] Metabolism from combat - _SLH_fHormoneMetabolismToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken")) 	
 	EndIf
 EndEvent
 
@@ -299,15 +305,13 @@ function updateExposure()
 			Debug.Trace("[SLFF] Heat from sprinting "+ FrostUtil.GetPlayerExposure()) 
 
 			; exposurePoints.Mod( minFloat(exposureAdjust, exposureDelta) )
-			FrostUtil.ModPlayerExposure( (-1.0 * _baseRate.GetValue()) * (fMetabolismRate * 2.0) )
-			StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 2.0)
+			FrostUtil.ModPlayerExposure( (-1.0 * _baseRate.GetValue()) * (fMetabolismRate * 2.0) )	
 
 		elseif (kPlayer.IsRunning() )
 			Debug.Trace("[SLFF] Heat from running "+ FrostUtil.GetPlayerExposure()) 
 
 			; exposurePoints.Mod( minFloat(exposureAdjust / 2.0, exposureDelta) )
 			FrostUtil.ModPlayerExposure(  (-1.0 * _baseRate.GetValue()) * fMetabolismRate  )
-			StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 1.0)
 
 		else 
 			; Debug.Trace("[SLFF] Heat from idle") 
@@ -318,6 +322,16 @@ function updateExposure()
 
 		endif
 	endIf
+
+	if (kPlayer.IsSprinting() )
+		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 0.2)
+		Debug.Trace("[SLFF] Metabolism from sprinting - _SLH_fHormoneMetabolismToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken")) 	
+
+	elseif (kPlayer.IsRunning() )
+		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 0.1)
+		Debug.Trace("[SLFF] Metabolism from running - _SLH_fHormoneMetabolismToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken")) 	
+	endif
+
 endfunction
 
 float function minFloat(float afA, float afB)
