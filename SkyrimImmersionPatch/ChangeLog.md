@@ -37,7 +37,7 @@ Inns
 - Added small candle on counters where missing
 
 Misc items
-- Heat sources: Signus Outpost, Outside Hall of Vigilants, Shrine of Azura, next to some shrines, Crabber's shanty, outside mills and Jarl houses
+- Heat sources: Bandit tower outside of Bleak Falls Barrow, Signus Outpost, Wayward pass, Outside Hall of Vigilants, Shrine of Azura, next to some shrines, Crabber's shanty, outside mills and Jarl houses
 - Mammoth tusks added to Giants chests (loot), in Smugglers Den
 - Firewood, torch, linen wraps added to Misc Merchant Items.
 - Cooking Spit added to inns without kitchens (can be disabled by talking to innkeepers)
