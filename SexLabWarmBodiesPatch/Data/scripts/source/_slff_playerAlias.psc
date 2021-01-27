@@ -85,7 +85,7 @@ event OnSLFFModExposure(String _eventName, String _args, Float _argc = 1.0, Form
 	if bFrostFallInit && (StorageUtil.GetFloatValue(kActor, "_SLH_fHormoneSexDrive") >= 20)
  	    updateExposure()
 
-		Debug.Trace("[SLFF] Receiving event 'Mod exposure'")
+		debugTrace("[SLFF] Receiving event 'Mod exposure'")
 		if (_args != "") 
 			debug.notification(_args)
 		endIf
@@ -114,7 +114,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken", _SLH_fHormonePigmentationToken + 0.1)
 	endif
 
-	Debug.Trace("[SLFF] Changing location - _SLH_fHormonePigmentationToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken")) 
+	debugTrace("[SLFF] Changing location - _SLH_fHormonePigmentationToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken")) 
 endEvent
 
 Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
@@ -123,7 +123,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 		; exposureDelta = exposureMax - FrostUtil.GetPlayerExposure()
 
 		; exposurePoints.Mod( minFloat( 1.0, exposureDelta) )
-		Debug.Trace("[SLFF] Heat from combat " + FrostUtil.GetPlayerExposure())
+		debugTrace("[SLFF] Heat from combat " + FrostUtil.GetPlayerExposure())
 		FrostUtil.ModPlayerExposure( _baseRate.GetValue() )
 
 	EndIf
@@ -131,7 +131,7 @@ Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile,
 	If (akAggressor != None) 
 		float _SLH_fHormoneMetabolismToken = StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken") 
 		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 0.1)
-		Debug.Trace("[SLFF] Metabolism from combat - _SLH_fHormoneMetabolismToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken")) 	
+		debugTrace("[SLFF] Metabolism from combat - _SLH_fHormoneMetabolismToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken")) 	
 	EndIf
 EndEvent
 
@@ -141,11 +141,11 @@ event stageStart(string eventName, string argString, float argNum, form sender)
 
 		if (FrostUtil.GetPlayerExposure() >= (frostfallColdLimit/2)) && (FrostUtil.GetCurrentTemperature() < 10) ; it's cold
 			; exposurePoints.Mod( minFloat(exposureAdjust, exposureDelta) ) 
-			Debug.Trace("[SLFF] Heat from sex - cold temp " + FrostUtil.GetPlayerExposure())
+			debugTrace("[SLFF] Heat from sex - cold temp " + FrostUtil.GetPlayerExposure())
 			FrostUtil.ModPlayerExposure( exposureAdjust * _baseRate.GetValue() )
 
 		elseif (FrostUtil.GetPlayerExposure() >= (frostfallColdLimit / 2) )
-			Debug.Trace("[SLFF] Heat from sex - warm temp "  + FrostUtil.GetPlayerExposure())
+			debugTrace("[SLFF] Heat from sex - warm temp "  + FrostUtil.GetPlayerExposure())
 			FrostUtil.ModPlayerExposure( exposureAdjust * _baseRate.GetValue() )
 		endIf
 	endIf
@@ -157,11 +157,11 @@ event OnSexLabEnd(string eventName, string argString, float argNum, form sender)
 
 		if (FrostUtil.GetPlayerExposure() >= (frostfallColdLimit/2)) && (FrostUtil.GetCurrentTemperature() < 10) ; it's cold
 			; exposurePoints.Mod( minFloat(exposureAdjust, exposureDelta) ) 
-			Debug.Trace("[SLFF] Heat from sex end - cold temp "  + FrostUtil.GetPlayerExposure())
+			debugTrace("[SLFF] Heat from sex end - cold temp "  + FrostUtil.GetPlayerExposure())
 			FrostUtil.ModPlayerExposure( (exposureAdjust  * _baseRate.GetValue() )/ 2 )
 
 		elseif (FrostUtil.GetPlayerExposure() >= (frostfallColdLimit / 2) )
-			Debug.Trace("[SLFF] Heat from sex end - warm temp " + FrostUtil.GetPlayerExposure())
+			debugTrace("[SLFF] Heat from sex end - warm temp " + FrostUtil.GetPlayerExposure())
 			FrostUtil.ModPlayerExposure( (exposureAdjust  * _baseRate.GetValue()) / 2 )
 		endIf
 	endIf
@@ -207,7 +207,7 @@ Event OnUpdate()
 
 			If (StorageUtil.GetIntValue( kPlayer, "_SD_iSanguineBlessings") >= 1) && (kPlayerRef.GetParentCell() != kPlayerStorageRef.GetParentCell())
 
-				Debug.Trace("[SD] Frostfall: Sending SD Dreamworld event " )
+				debugTrace("[SD] Frostfall: Sending SD Dreamworld event " )
 				Debug.MessageBox("You collapse after nearly freezing to death and wake up back into Sanguine's lap." )
 				SendModEvent("SDDreamworldPull")
 
@@ -226,7 +226,7 @@ Event OnUpdate()
 		FrostUtil.ModPlayerExposure( exposureAdjust * 2, 10 )
 		playersHealth = kPlayer.GetActorValuePercentage("health")
 		if ((playersHealth < 0.8) && (FrostUtil.GetPlayerWetnessLevel()>=1))
-		  	; Debug.Trace("The player has over half their health left")
+		  	; debugTrace("The player has over half their health left")
 			_heal.RemoteCast(kPlayer, kPlayer, kPlayer)
 		endIf
 	endif
@@ -236,7 +236,7 @@ Event OnUpdate()
 		FrostUtil.ModPlayerExposure( exposureAdjust * 2, 10 )
 		playersHealth = kPlayer.GetActorValuePercentage("health")
 		if ((playersHealth < 0.8) && (FrostUtil.GetPlayerWetnessLevel()>=1))
-		  	; Debug.Trace("The player has over half their health left")
+		  	; debugTrace("The player has over half their health left")
 			_heal.RemoteCast(kPlayer, kPlayer, kPlayer)
 		endIf
 	endif
@@ -267,7 +267,7 @@ Event OnUpdate()
 
     ;RegisterForSingleUpdate( fRFSU )
     RegisterForSingleUpdate( fRFSU * 30 ) ;performance
-	;debug.trace("[slh+] bimbo OnUpdate, Done")
+	;debugTrace("[slh+] bimbo OnUpdate, Done")
 EndEvent
 
 
@@ -292,29 +292,29 @@ function updateExposure()
 	Endif
 
 	if bFrostFallInit && (FrostUtil.GetPlayerExposure() >= frostfallColdLimit)
-	    Debug.Trace("[SLFF] Checkpoint - Exposure: " + FrostUtil.GetPlayerExposure())
+	    debugTrace("[SLFF] Checkpoint - Exposure: " + FrostUtil.GetPlayerExposure())
 
 		if (kPlayer.IsOnMount())
-			Debug.Trace("[SLFF] Heat from horse "+ FrostUtil.GetPlayerExposure())
+			debugTrace("[SLFF] Heat from horse "+ FrostUtil.GetPlayerExposure())
 			; exposureDelta = exposureMax - FrostUtil.GetPlayerExposure()
 
 			; exposurePoints.Mod( minFloat(exposureAdjust + 5.0, exposureDelta) )
 			FrostUtil.ModPlayerExposure( (exposureAdjust * _baseRate.GetValue()) - 5.0  )
 
 		elseif (kPlayer.IsSprinting() )
-			Debug.Trace("[SLFF] Heat from sprinting "+ FrostUtil.GetPlayerExposure()) 
+			debugTrace("[SLFF] Heat from sprinting "+ FrostUtil.GetPlayerExposure()) 
 
 			; exposurePoints.Mod( minFloat(exposureAdjust, exposureDelta) )
 			FrostUtil.ModPlayerExposure( (-1.0 * _baseRate.GetValue()) * (fMetabolismRate * 2.0) )	
 
 		elseif (kPlayer.IsRunning() )
-			Debug.Trace("[SLFF] Heat from running "+ FrostUtil.GetPlayerExposure()) 
+			debugTrace("[SLFF] Heat from running "+ FrostUtil.GetPlayerExposure()) 
 
 			; exposurePoints.Mod( minFloat(exposureAdjust / 2.0, exposureDelta) )
 			FrostUtil.ModPlayerExposure(  (-1.0 * _baseRate.GetValue()) * fMetabolismRate  )
 
 		else 
-			; Debug.Trace("[SLFF] Heat from idle") 
+			; debugTrace("[SLFF] Heat from idle") 
 
 			; exposurePoints.Mod( minFloat(1.0, exposureDelta) )
 			FrostUtil.ModPlayerExposure(  (-1.0 * _baseRate.GetValue()) * (fMetabolismRate / 2.0) )
@@ -325,11 +325,11 @@ function updateExposure()
 
 	if (kPlayer.IsSprinting() )
 		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 0.2)
-		Debug.Trace("[SLFF] Metabolism from sprinting - _SLH_fHormoneMetabolismToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken")) 	
+		debugTrace("[SLFF] Metabolism from sprinting - _SLH_fHormoneMetabolismToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken")) 	
 
 	elseif (kPlayer.IsRunning() )
 		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken", _SLH_fHormoneMetabolismToken + 0.1)
-		Debug.Trace("[SLFF] Metabolism from running - _SLH_fHormoneMetabolismToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken")) 	
+		debugTrace("[SLFF] Metabolism from running - _SLH_fHormoneMetabolismToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormoneMetabolismToken")) 	
 	endif
 
 endfunction
@@ -340,4 +340,11 @@ float function minFloat(float afA, float afB)
 	else
 		return afB
 	endIf
+endFunction
+
+
+Function debugTrace(string traceMsg)
+	; if (StorageUtil.GetIntValue(none, "_SLH_debugTraceON")==1)
+		; Debug.Trace("[SLFF]" + traceMsg)
+	; endif
 endFunction
