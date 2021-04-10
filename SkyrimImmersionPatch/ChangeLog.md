@@ -48,3 +48,10 @@ Misc items
 - Drifting wood logs, carriages with wood planks near mills
 - Changed ownership of some abandonned beds: Lund's hut, Witchmist Grove, Mixwater Mill Worker House, Meeko's Shack
 - Added beds to Duskglow crevice 
+
+Legendary Edition add-on
+- Uses DLC content in mainland Skyrim (All mods are required)
+- Heavy snow trees north of Whiterun and in altitude
+- Use dead trees, broken trees near volcanic tundra
+- Mushroom near morrowind border south of Riften (check ESO)
+- Add netch and ash yams, ashlander lanterns to Hlaalu_Farm
