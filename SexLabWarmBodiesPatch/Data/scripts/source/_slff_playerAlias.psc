@@ -221,8 +221,8 @@ Event OnUpdate()
 
 	EndIf
 
-    ; SD+/Spriggan integration
-    If (StorageUtil.GetIntValue(kPlayer, "_SD_iSprigganInfected")==1)
+    ; Parasites integration 
+    If (StorageUtil.GetIntValue(kPlayer, "_SD_iSprigganInfected")==1) || (StorageUtil.GetIntValue(kPlayer, "_SLP_toggleSprigganRoot")==1)
 		FrostUtil.ModPlayerExposure( exposureAdjust * 2, 10 )
 		playersHealth = kPlayer.GetActorValuePercentage("health")
 		if ((playersHealth < 0.8) && (FrostUtil.GetPlayerWetnessLevel()>=1))
@@ -231,7 +231,6 @@ Event OnUpdate()
 		endIf
 	endif
 
-	; Parasites integration 
     If ( (StorageUtil.GetIntValue(kPlayer, "_SLP_toggleLivingArmor")==1) || (StorageUtil.GetIntValue(kPlayer, "_SLP_toggleTentacleMonster")==1) )
 		FrostUtil.ModPlayerExposure( exposureAdjust * 2, 10 )
 		playersHealth = kPlayer.GetActorValuePercentage("health")
