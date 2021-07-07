@@ -240,6 +240,10 @@ Event OnUpdate()
 		endIf
 	endif
 
+    If (StorageUtil.GetIntValue(kPlayer, "_SLP_toggleChaurusQueenArmor")==1) || (StorageUtil.GetIntValue(kPlayer, "_SLP_toggleChaurusQueenBody")==1)
+		FrostUtil.ModPlayerExposure( exposureAdjust * 1.5, 10 )
+		playersHealth = kPlayer.GetActorValuePercentage("health")
+	endif
 			
     ; Hormones Succubus/Bimbo integration
     If (StorageUtil.GetIntValue(kPlayer, "_SLH_iSuccubus")==1) 
