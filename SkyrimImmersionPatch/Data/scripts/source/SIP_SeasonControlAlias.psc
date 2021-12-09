@@ -5,6 +5,7 @@ SIP_fctSeasons Property fctSeasons Auto
 GlobalVariable Property GV_DaysInYear Auto
 
 Int iGameDateLastCheck = -1
+Int iHourLastCheck = -1
 Int iDaysSinceLastCheck
 Int iDaysPassed
 Int iDaysCount  
@@ -92,6 +93,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	Int iPercentSeason
 	Int iChanceWeatherOverride
 	Int iDaysInYear = GV_DaysInYear.GetValue() as Int
+	Int iThisHour = GetCurrentHourOfDay() 
  
 	iDaysInSeasonTotal = (iDaysInYear / 4)
 	iSeason = iDaysCount / iDaysInSeasonTotal
@@ -102,7 +104,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	iChanceWeatherOverride = (100 - ( 2 * Math.abs(50 - iPercentSeason))) as Int
 
 	; cap the chance of weather override to prevent changing weather at every cell location change
-	iChanceWeatherOverride = ( (iChanceWeatherOverride * 80) / 100 )
+	iChanceWeatherOverride = ( (iChanceWeatherOverride * 60) / 100 )
 
 	if (iChanceWeatherOverride<10)
 		iChanceWeatherOverride = 10
@@ -123,11 +125,27 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	debug.trace("[SIP] iChanceWeatherOverride: " + iChanceWeatherOverride)
 
 
-  	if (Utility.RandomInt(0,100)<iChanceWeatherOverride)
+	if (iHourLastCheck==-1)
+		iHourLastCheck = iThisHour
+	endif
+
+	; enforce at least 1 hour between checks to prevent back to back weather changes
+  	if (Utility.RandomInt(0,100)<iChanceWeatherOverride) && ((iThisHour - iHourLastCheck) >=1)
   		fctSeasons.updateWeather(iSeason, iPercentSeason)
+  		iHourLastCheck = iThisHour
+  		; debug.notification("[SIP] Weather change")
   	endif
  
 endEvent
+
+Int Function GetCurrentHourOfDay() 
+ 
+	float Time = Utility.GetCurrentGameTime()
+	Time -= Math.Floor(Time) ; Remove "previous in-game days passed" bit
+	Time *= 24 ; Convert from fraction of a day to number of hours
+	Return (Time as Int)
+ 
+EndFunction
 
 float function fMin(float  a, float b)
 	if (a<=b)
