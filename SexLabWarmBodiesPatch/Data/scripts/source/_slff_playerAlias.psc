@@ -27,6 +27,11 @@ int daysSinceEnslavement
 int iDaysSinceLastCheck = -1
 int iDaysPassed
 
+Int iDaysInYear = 365
+Int iDaysCount = -1
+Int iSeason
+
+
 
 Event OnInit()
 	; 0.0 - 19.9 = Warm
@@ -70,9 +75,28 @@ function maintenance()
 
 	RegisterForModEvent("AnimationEnd",   "OnSexLabEnd")
 	RegisterForModEvent("StageStart", "stageStart")
+ 	RegisterForModEvent("SIPSetDaysInYear",   "OnSetDaysInYearEvent")
+ 	RegisterForModEvent("SIPSetDaysCount",   "OnSetDaysCountEvent") 
+
 
 	RegisterForModEvent("SLFFModExposure", "OnSLFFModExposure")
 endFunction
+
+Event OnSetDaysInYearEvent(String _eventName, String _args, Float _argc = 1.0, Form _sender)
+ 	Actor kActor = _sender as Actor
+ 
+ 	iDaysInYear = _argc as Int
+
+ 	Debug.Trace("[SLFF] Received OnSetDaysInYearEvent - Set iDaysInYear to " + _argc as Int) 
+endEvent
+
+Event OnSetDaysCountEvent(String _eventName, String _args, Float _argc = 1.0, Form _sender)
+ 	Actor kActor = _sender as Actor
+ 
+ 	iDaysCount = _argc as Int
+
+ 	Debug.Trace("[SLFF] Received OnSetDaysInYearEvent - Set iDaysCount to " + _argc as Int) 
+endEvent 
 
 event OnSLFFModExposure(String _eventName, String _args, Float _argc = 1.0, Form _sender)
  	Actor kActor = _sender as Actor
@@ -97,11 +121,13 @@ endEvent
 ;how much gold hypnosis victim earns each day
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	float _SLH_fHormonePigmentationToken = StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken") 
-	kPlayerRef = Game.GetPlayer() 
+	Int iDaysInSeasonTotal
+	Float fSeasonalExposure 
+	Int iThisHour = GetCurrentHourOfDay() 
+ 
+ 	kPlayerRef = Game.GetPlayer() 
 	kPlayer        = kPlayerRef as Actor
 	; Debug.Notification("[SLFF] Changing location - Exposure: " + FrostUtil.GetPlayerExposure())
-
-	updateExposure()
 
 	; Base bonus for changing location
 	if (FrostUtil.GetPlayerExposure() >= (frostfallColdLimit / 4))
@@ -112,7 +138,46 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken", _SLH_fHormonePigmentationToken - 0.1)
 	else
 		StorageUtil.SetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken", _SLH_fHormonePigmentationToken + 0.1)
+
+		if (iDaysCount != -1)
+			; Seasonal weather compatibility
+			iDaysInSeasonTotal = (iDaysInYear / 4)
+			iSeason = iDaysCount / iDaysInSeasonTotal
+
+			; seasonal adjustment 
+			if (iSeason == 0) ; Spring
+				fSeasonalExposure = 4.0 * (2.0 - Utility.RandomFloat(0.0,2.5) )
+			elseif (iSeason == 1) ; Summer
+				fSeasonalExposure = 6.0 * (1.0 - Utility.RandomFloat(0.0,2.5) )
+			elseif (iSeason == 2) ; Fall
+				fSeasonalExposure = 4.0 * (1.0 - Utility.RandomFloat(0.0,1.5) )
+			elseif (iSeason == 3) ; Winter
+				fSeasonalExposure = 6.0 * (3.0 - Utility.RandomFloat(0.0,2.0) ) 
+			endif
+
+			; day / night adjustment
+			if ( (iThisHour<=8) || (iThisHour>=8) )
+				if (iSeason == 0) ; Spring
+					fSeasonalExposure =  1.5 * fSeasonalExposure 
+				elseif (iSeason == 1) ; Summer
+					fSeasonalExposure = 0.5 * fSeasonalExposure  
+				elseif (iSeason == 2) ; Fall
+					fSeasonalExposure = 1.5 * fSeasonalExposure   
+				elseif (iSeason == 3) ; Winter
+					fSeasonalExposure = 2.0 * fSeasonalExposure  
+				endif
+			endif
+
+			FrostUtil.ModPlayerExposure( fSeasonalExposure * _baseRate.GetValue() )
+
+			; debug.notification("[SLFF] Changing location - iSeason: " + iSeason) 
+			debug.trace("[SLFF] Changing location - fSeasonalExposure: " + fSeasonalExposure) 
+		endif
+
 	endif
+
+	updateExposure()
+
 
 	debugTrace("[SLFF] Changing location - _SLH_fHormonePigmentationToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken")) 
 endEvent
@@ -302,7 +367,7 @@ function updateExposure()
 			; exposureDelta = exposureMax - FrostUtil.GetPlayerExposure()
 
 			; exposurePoints.Mod( minFloat(exposureAdjust + 5.0, exposureDelta) )
-			FrostUtil.ModPlayerExposure( (exposureAdjust * _baseRate.GetValue()) - 5.0  )
+			FrostUtil.ModPlayerExposure( (-1.0 * exposureAdjust * _baseRate.GetValue()) - 5.0  )
 
 		elseif (kPlayer.IsSprinting() )
 			debugTrace("[SLFF] Heat from sprinting "+ FrostUtil.GetPlayerExposure()) 
@@ -351,3 +416,13 @@ Function debugTrace(string traceMsg)
 		; Debug.Trace("[SLFF]" + traceMsg)
 	; endif
 endFunction
+
+
+Int Function GetCurrentHourOfDay() 
+ 
+	float Time = Utility.GetCurrentGameTime()
+	Time -= Math.Floor(Time) ; Remove "previous in-game days passed" bit
+	Time *= 24 ; Convert from fraction of a day to number of hours
+	Return (Time as Int)
+ 
+EndFunction
