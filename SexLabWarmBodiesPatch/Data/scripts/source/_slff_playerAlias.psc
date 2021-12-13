@@ -158,13 +158,13 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 			; day / night adjustment
 			if ( (iThisHour<=8) || (iThisHour>=8) )
 				if (iSeason == 0) ; Spring
-					fSeasonalExposure =  1.5 * fSeasonalExposure 
+					fSeasonalExposure =  1.2 * fSeasonalExposure 
 				elseif (iSeason == 1) ; Summer
 					fSeasonalExposure = 0.5 * fSeasonalExposure  
 				elseif (iSeason == 2) ; Fall
-					fSeasonalExposure = 1.5 * fSeasonalExposure   
+					fSeasonalExposure = 1.2 * fSeasonalExposure   
 				elseif (iSeason == 3) ; Winter
-					fSeasonalExposure = 2.0 * fSeasonalExposure  
+					fSeasonalExposure = 1.5 * fSeasonalExposure  
 				endif
 			endif
 
