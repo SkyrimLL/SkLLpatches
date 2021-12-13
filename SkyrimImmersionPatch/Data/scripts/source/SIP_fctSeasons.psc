@@ -66,9 +66,9 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 			SpringCloudy.SetActive(true)
 		endif
 
-		Game.SetGameSettingFloat("iMasserSize", 60)  	; default 90
-		Game.SetGameSettingFloat("iSecundaSize", 50) 	; default 40
-		Game.SetGameSettingFloat("fPrecipWindMult", 700) ; default 500
+		Game.SetGameSettingInt("iMasserSize", 30)  	; default 90
+		Game.SetGameSettingInt("iSecundaSize", 20) 	; default 40
+		Game.SetGameSettingFloat("fPrecipWindMult", 700.0) ; default 500
 
 	elseif (iSeason == 1)
 		; Summer  
@@ -89,9 +89,9 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 			SummerSun.SetActive(true)
 		endif
 
-		Game.SetGameSettingFloat("iMasserSize", 90)  	; default 90
-		Game.SetGameSettingFloat("iSecundaSize", 40) 	; default 40
-		Game.SetGameSettingFloat("fPrecipWindMult", 500) ; default 500
+		Game.SetGameSettingInt("iMasserSize", 90)  	; default 90
+		Game.SetGameSettingInt("iSecundaSize", 80) 	; default 40
+		Game.SetGameSettingFloat("fPrecipWindMult", 500.0) ; default 500
 
 	elseif (iSeason == 2)
 		; Fall  
@@ -115,9 +115,9 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 			FallCloudy.SetActive(true)
 		endif
 
-		Game.SetGameSettingFloat("iMasserSize", 50)  	; default 90
-		Game.SetGameSettingFloat("iSecundaSize", 60) 	; default 40
-		Game.SetGameSettingFloat("fPrecipWindMult", 600) ; default 500
+		Game.SetGameSettingInt("iMasserSize", 20)  	; default 90
+		Game.SetGameSettingInt("iSecundaSize", 30) 	; default 40
+		Game.SetGameSettingFloat("fPrecipWindMult", 600.0) ; default 500
 
 	elseif (iSeason == 3)
 		; Winter 
@@ -141,9 +141,9 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 			WinterCloudy.SetActive(true)
 		endif
 
-		Game.SetGameSettingFloat("iMasserSize", 40)  	; default 90
-		Game.SetGameSettingFloat("iSecundaSize", 90) 	; default 40
-		Game.SetGameSettingFloat("fPrecipWindMult", 800) ; default 500
+		Game.SetGameSettingInt("iMasserSize", 20)  	; 20 - default 90
+		Game.SetGameSettingInt("iSecundaSize", 10) 	; 90 - default 40
+		Game.SetGameSettingFloat("fPrecipWindMult", 800.0) ; default 500
 	endif
 
 	; BadWeather.SetActive(true)

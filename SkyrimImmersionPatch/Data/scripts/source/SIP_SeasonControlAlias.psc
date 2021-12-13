@@ -36,6 +36,8 @@ Function _maintenance()
 
 	RegisterForSleep()
 
+ 	tryUpdateWeather(True) 
+ 
 EndFunction
 
 
@@ -87,13 +89,25 @@ Event OnSleepStart(float afSleepStartTime, float afDesiredSleepEndTime)
 EndEvent
 
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
+
+ 	tryUpdateWeather(False) 
+
+endEvent
+
+Function tryUpdateWeather(Bool bForceUpdate = False) 
 	Actor PlayerActor = Game.GetPlayer() as Actor
+	ObjectReference PlayerActorRef = Game.GetPlayer() as ObjectReference
 	Int iDaysInSeason
 	Int iDaysInSeasonTotal
 	Int iPercentSeason
 	Int iChanceWeatherOverride
 	Int iDaysInYear = GV_DaysInYear.GetValue() as Int
 	Int iThisHour = GetCurrentHourOfDay() 
+
+	if (PlayerActorRef.IsInInterior())
+		debug.trace("[SIP] Player is in Interior Cell - Aborting ")
+		return
+	endif
  
 	iDaysInSeasonTotal = (iDaysInYear / 4)
 	iSeason = iDaysCount / iDaysInSeasonTotal
@@ -130,13 +144,12 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	endif
 
 	; enforce at least 1 hour between checks to prevent back to back weather changes
-  	if (Utility.RandomInt(0,100)<iChanceWeatherOverride) && ((iThisHour - iHourLastCheck) >=1)
+  	if (bForceUpdate) || ((Utility.RandomInt(0,100)<iChanceWeatherOverride)  && ((iThisHour - iHourLastCheck) >=1) )
   		fctSeasons.updateWeather(iSeason, iPercentSeason)
   		iHourLastCheck = iThisHour
-  		; debug.notification("[SIP] Weather change")
+  		debug.notification("[SIP] Weather change")
   	endif
- 
-endEvent
+EndFunction
 
 Int Function GetCurrentHourOfDay() 
  
