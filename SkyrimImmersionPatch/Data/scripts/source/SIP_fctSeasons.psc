@@ -68,6 +68,8 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 
 		Game.SetGameSettingInt("iMasserSize", 30)  	; default 90
 		Game.SetGameSettingInt("iSecundaSize", 20) 	; default 40
+		Game.SetGameSettingFloat("fSecundaZOffset", 50.0) ; default 50.0
+		Game.SetGameSettingFloat("fMasserZOffset", 35.0) ; default 35.0
 		Game.SetGameSettingFloat("fPrecipWindMult", 700.0) ; default 500
 
 	elseif (iSeason == 1)
@@ -91,6 +93,8 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 
 		Game.SetGameSettingInt("iMasserSize", 90)  	; default 90
 		Game.SetGameSettingInt("iSecundaSize", 80) 	; default 40
+		Game.SetGameSettingFloat("fSecundaZOffset", 80.0) ; default 50.0
+		Game.SetGameSettingFloat("fMasserZOffset", 65.0) ; default 35.0
 		Game.SetGameSettingFloat("fPrecipWindMult", 500.0) ; default 500
 
 	elseif (iSeason == 2)
@@ -117,6 +121,8 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 
 		Game.SetGameSettingInt("iMasserSize", 20)  	; default 90
 		Game.SetGameSettingInt("iSecundaSize", 30) 	; default 40
+		Game.SetGameSettingFloat("fSecundaZOffset", 35.0) ; default 50.0
+		Game.SetGameSettingFloat("fMasserZOffset", 50.0) ; default 35.0
 		Game.SetGameSettingFloat("fPrecipWindMult", 600.0) ; default 500
 
 	elseif (iSeason == 3)
@@ -129,10 +135,10 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 			WinterOvercast.SetActive(true)
 		elseif (iRandomNum>80)
 			; debug.notification("(Winter Snow Storm)")
-			; WinterSnowStorm.SetActive(true)
-		elseif (iRandomNum>60)
+			WinterSnowStorm.SetActive(true)
+		elseif (iRandomNum>40)
 			; debug.notification("(Winter Snow Fall)")
-			; WinterSnowFall.SetActive(true)
+			WinterSnowFall.SetActive(true)
 		elseif (iRandomNum>20)
 			; debug.notification("(Winter Fog)")
 			WinterFog.SetActive(true)
@@ -143,6 +149,8 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 
 		Game.SetGameSettingInt("iMasserSize", 20)  	; 20 - default 90
 		Game.SetGameSettingInt("iSecundaSize", 10) 	; 90 - default 40
+		Game.SetGameSettingFloat("fSecundaZOffset", 20.0) ; default 50.0
+		Game.SetGameSettingFloat("fMasserZOffset", 15.0) ; default 35.0
 		Game.SetGameSettingFloat("fPrecipWindMult", 800.0) ; default 500
 	endif
 
