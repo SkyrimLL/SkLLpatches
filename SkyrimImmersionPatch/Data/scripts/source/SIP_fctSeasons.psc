@@ -5,18 +5,21 @@ Weather Property SpringOvercast Auto 	; SkyrimCloudy
 Weather Property SpringHeavyRain Auto 	; SkyrimStormRain
 Weather Property SpringLightRain Auto 	; SkyrimOvercastRain
 Weather Property SpringShowers Auto 	; SkyrimOvercastRainMA
+Weather Property SpringFog Auto 		; SkyrimFogRE
 Weather Property SpringCloudy Auto 		; SkyrimCloudyMA
 
 ; Summer - TU - Tundra
 Weather Property SummerOvercast Auto 	; SkyrimCloudy
 Weather Property SummerCloudy Auto 		; SkyrimCloudyTU
-Weather Property SummerSun Auto 		; SkyrimClearTU
+Weather Property SummerFog Auto 		; SkyrimClearTU
+Weather Property SummerSun Auto 		; SkyrimFog
 Weather Property SummerSunAurora Auto 	; SkyrimClearTU_A
 
 ; Fall - FF - Fall Forest
 Weather Property FallOvercast Auto 		; SkyrimCloudy
 Weather Property FallHeavyRain Auto 	; SkyrimStormRainFF
 Weather Property FallLightRain Auto 	; SkyrimOvercastRainFF
+Weather Property FallFog Auto 			; SkyrimFogFF
 Weather Property FallHeavyFog Auto 		; SkyrimFogMA
 Weather Property FallCloudy Auto 		; SkyrimCloudyFF
 
@@ -26,6 +29,12 @@ Weather Property WinterSnowStorm Auto 	; SkyrimStormSnow
 Weather Property WinterSnowFall Auto 	; SkyrimOvercastSnow
 Weather Property WinterFog Auto 		; RiftenOvercastFog
 Weather Property WinterCloudy Auto 		; SkyrimOvercastSnow
+
+; Seasonal image modifiers
+ImageSpaceModifier Property SpringImod  Auto  ; 
+ImageSpaceModifier Property SummerImod  Auto  ; Saturated
+ImageSpaceModifier Property FallImod  	Auto  ; 
+ImageSpaceModifier Property WinterImod  Auto  ; Desaturated
 
 ;/
 :: For each season, pick a preferred weather type and add a chance of transition to that weather with OnLocationChange
@@ -41,13 +50,17 @@ Reference - https://girlplaysgame.com/2015/08/12/skyrim-ultimate-weather-guide-a
 Function updateWeather(Int iSeason, Int iPercentSeason)
 	Int iRandomNum = utility.RandomInt(0,100)
 	Int iThisHour = GetCurrentHourOfDay() 
- 
+ 	Float fImod = ((2 * Math.abs(50 - iPercentSeason)) as Float) / 100.0
+
 	; Weather currentWeather = Weather.GetCurrentWeather()
 
 	if (iSeason == 0)
 		; Spring  
-		if (iRandomNum>70) && ( (iThisHour<=8) || (iThisHour>=8))
+		if (iRandomNum>70) && ( (iThisHour<=6) || (iThisHour>=8))
 			SummerSunAurora.SetActive(true)
+
+		elseif (iRandomNum>50) && ( (iThisHour>=7) || (iThisHour<=8))
+			SpringFog.SetActive(true)
 
 		elseif (iRandomNum>60) && ( (iPercentSeason<=25) || (iPercentSeason>=75))
 			; debug.notification("(Spring Overcast)")
@@ -66,6 +79,8 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 			SpringCloudy.SetActive(true)
 		endif
 
+		; SpringImod.Apply( fImod )
+
 		Game.SetGameSettingInt("iMasserSize", 30)  	; default 90
 		Game.SetGameSettingInt("iSecundaSize", 20) 	; default 40
 		Game.SetGameSettingFloat("fSecundaZOffset", 50.0) ; default 50.0
@@ -74,8 +89,11 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 
 	elseif (iSeason == 1)
 		; Summer  
-		if (iRandomNum>40) && ( (iThisHour<=8) || (iThisHour>=8))
+		if (iRandomNum>40) && ( (iThisHour<=6) || (iThisHour>=8))
 			SummerSunAurora.SetActive(true)
+
+		elseif (iRandomNum>80) && ( (iThisHour>=7) || (iThisHour<=8))
+			SummerFog.SetActive(true)
 
 		elseif (iRandomNum>60) && ( (iPercentSeason<=25) || (iPercentSeason>=75))
 			; debug.notification("(Summer Overcast)")
@@ -91,6 +109,8 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 			SummerSun.SetActive(true)
 		endif
 
+		; SummerImod.Apply( fImod )
+
 		Game.SetGameSettingInt("iMasserSize", 90)  	; default 90
 		Game.SetGameSettingInt("iSecundaSize", 80) 	; default 40
 		Game.SetGameSettingFloat("fSecundaZOffset", 80.0) ; default 50.0
@@ -99,8 +119,11 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 
 	elseif (iSeason == 2)
 		; Fall  
-		if (iRandomNum>80) && ( (iThisHour<=8) || (iThisHour>=8))
+		if (iRandomNum>80) && ( (iThisHour<=6) || (iThisHour>=8))
 			SummerSunAurora.SetActive(true)
+
+		elseif (iRandomNum>50) && ( (iThisHour>=7) || (iThisHour<=8))
+			FallFog.SetActive(true)
 
 		elseif (iRandomNum>60) && ( (iPercentSeason<=25) || (iPercentSeason>=75))
 			; debug.notification("(Fall Overcast)")
@@ -119,6 +142,8 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 			FallCloudy.SetActive(true)
 		endif
 
+		; FallImod.Apply( fImod )
+
 		Game.SetGameSettingInt("iMasserSize", 20)  	; default 90
 		Game.SetGameSettingInt("iSecundaSize", 30) 	; default 40
 		Game.SetGameSettingFloat("fSecundaZOffset", 35.0) ; default 50.0
@@ -127,8 +152,11 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 
 	elseif (iSeason == 3)
 		; Winter 
-		if (iRandomNum>60) && ( (iThisHour<=8) || (iThisHour>=8))
+		if (iRandomNum>60) && ( (iThisHour<=6) || (iThisHour>=8))
 			SummerSunAurora.SetActive(true)
+
+		elseif (iRandomNum>70) && ( (iThisHour>=7) || (iThisHour<=8))
+			WinterFog.SetActive(true)
 
 		elseif (iRandomNum>60) && ( (iPercentSeason<=25) || (iPercentSeason>=75))
 			; debug.notification("(Winter Overcast)")
@@ -136,16 +164,18 @@ Function updateWeather(Int iSeason, Int iPercentSeason)
 		elseif (iRandomNum>80)
 			; debug.notification("(Winter Snow Storm)")
 			WinterSnowStorm.SetActive(true)
-		elseif (iRandomNum>40)
+		elseif (iRandomNum>20)
 			; debug.notification("(Winter Snow Fall)")
 			WinterSnowFall.SetActive(true)
-		elseif (iRandomNum>20)
+		elseif (iRandomNum>10)
 			; debug.notification("(Winter Fog)")
 			WinterFog.SetActive(true)
 		else
 			; debug.notification("(Winter Cloudy)")
 			WinterCloudy.SetActive(true)
 		endif
+
+		; WinterImod.Apply( fImod )
 
 		Game.SetGameSettingInt("iMasserSize", 20)  	; 20 - default 90
 		Game.SetGameSettingInt("iSecundaSize", 10) 	; 90 - default 40

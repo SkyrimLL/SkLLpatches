@@ -147,7 +147,7 @@ Function tryUpdateWeather(Bool bForceUpdate = False)
   	if (bForceUpdate) || ((Utility.RandomInt(0,100)<iChanceWeatherOverride)  && ((iThisHour - iHourLastCheck) >=1) )
   		fctSeasons.updateWeather(iSeason, iPercentSeason)
   		iHourLastCheck = iThisHour
-  		debug.notification("[SIP] Weather change")
+  		; debug.notification("[SIP] Weather change")
   	endif
 EndFunction
 
