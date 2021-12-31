@@ -30,6 +30,7 @@ int iDaysPassed
 Int iDaysInYear = 365
 Int iDaysCount = -1
 Int iSeason
+Int iHourLastCheck 
 
 
 
@@ -129,6 +130,10 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 	kPlayer        = kPlayerRef as Actor
 	; Debug.Notification("[SLFF] Changing location - Exposure: " + FrostUtil.GetPlayerExposure())
 
+	if (iHourLastCheck==-1)
+		iHourLastCheck = iThisHour
+	endif
+
 	; Base bonus for changing location
 	if (FrostUtil.GetPlayerExposure() >= (frostfallColdLimit / 4))
 		FrostUtil.ModPlayerExposure( -0.2 * _baseRate.GetValue() )
@@ -176,7 +181,10 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
 
 	endif
 
-	updateExposure()
+	if ((iThisHour - iHourLastCheck) >=1) 
+		updateExposure()
+		iHourLastCheck = iThisHour
+	endif
 
 
 	debugTrace("[SLFF] Changing location - _SLH_fHormonePigmentationToken: " + StorageUtil.GetFloatValue(kPlayer, "_SLH_fHormonePigmentationToken")) 
